@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OE Wheels B2B Portal - Home</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js" crossorigin="anonymous"></script>
+    <script>
+        Babel.registerPreset('react-classic', {
+            presets: [
+                [Babel.availablePresets.react, { runtime: 'classic' }]
+            ]
+        });
+    </script>
+    <style>
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="react-classic">
+        const { useState, useEffect, useRef } = React;
+
+        // ── ICONS ──
+        const Icon = ({ path, className = "w-6 h-6", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
+                {path}
+            </svg>
+        );
+
+        const ArrowLeft   = (p) => <Icon {...p} path={<><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></>} />;
+        const ArrowRight  = (p) => <Icon {...p} path={<><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></>} />;
+        const Car         = (p) => <Icon {...p} path={<><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></>} />;
+        const ChevronDown = (p) => <Icon {...p} path={<path d="m6 9 6 6 6-6"/>} />;
+        const ChevronLeft = (p) => <Icon {...p} path={<path d="m15 18-6-6 6-6"/>} />;
+        const ChevronRight= (p) => <Icon {...p} path={<path d="m9 18 6-6-6-6"/>} />;
+        const CircleHelp  = (p) => <Icon {...p} path={<><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></>} />;
+        const CreditCard  = (p) => <Icon {...p} path={<><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></>} />;
+        const FileText    = (p) => <Icon {...p} path={<><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></>} />;
+        const Grid        = (p) => <Icon {...p} path={<><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></>} />;
+        const Hash        = (p) => <Icon {...p} path={<><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></>} />;
+        const Info        = (p) => <Icon {...p} path={<><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></>} />;
+        const ListIcon    = (p) => <Icon {...p} path={<><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></>} />;
+        const Lock        = (p) => <Icon {...p} path={<><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>} />;
+        const LogIn       = (p) => <Icon {...p} path={<><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></>} />;
+        const LogOut      = (p) => <Icon {...p} path={<><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></>} />;
+        const MapPin      = (p) => <Icon {...p} path={<><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></>} />;
+        const Menu        = (p) => <Icon {...p} path={<><path d="M4 12h16"/><path d="M4 18h16"/><path d="M4 6h16"/></>} />;
+        const Package     = (p) => <Icon {...p} path={<><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></>} />;
+        const Pencil      = (p) => <Icon {...p} path={<><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></>} />;
+        const Percent     = (p) => <Icon {...p} path={<><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></>} />;
+        const Phone       = (p) => <Icon {...p} path={<><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></>} />;
+        const Search      = (p) => <Icon {...p} path={<><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></>} />;
+        const Settings    = (p) => <Icon {...p} path={<><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></>} />;
+        const ShoppingCart= (p) => <Icon {...p} path={<><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></>} />;
+        const SlidersVertical=(p)=><Icon {...p} path={<><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></>} />;
+        const Star        = (p) => <Icon {...p} path={<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>} />;
+        const Tag         = (p) => <Icon {...p} path={<><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></>} />;
+        const TrendingUp  = (p) => <Icon {...p} path={<><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></>} />;
+        const Truck       = (p) => <Icon {...p} path={<><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></>} />;
+        const User        = (p) => <Icon {...p} path={<><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>} />;
+        const X           = (p) => <Icon {...p} path={<><path d="M18 6 6 18"/><path d="m6 6 12 12"/></>} />;
+
+        // ── OEW LOGO ──
+        const OewLogo = ({ className = "h-10 w-auto", fill = "#1d4ed8" }) => (
+            <svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg" className={className}>
+                <g transform="skewX(-20) translate(40, 0)" fill={fill} fillRule="evenodd">
+                    <path d="M0,0 L80,0 L80,100 L0,100 Z M25,25 L25,75 L55,75 L55,25 Z" />
+                    <path d="M90,0 L160,0 L160,100 L90,100 Z M160,25 L115,25 L115,45 L140,45 L140,60 L115,60 L115,75 L160,75 Z" />
+                    <path d="M170,0 L250,0 L250,100 L170,100 Z M190,0 L190,75 L200,75 L200,0 Z M220,0 L220,75 L230,75 L230,0 Z" />
+                </g>
+            </svg>
+        );
+
+        // ── HEADER ──
+        function Header({ 
+            currentView, navigateTo, isMobileMenuOpen, setIsMobileMenuOpen,
+            isStoreModalOpen, setIsStoreModalOpen,
+            isAddPaymentModalOpen, setIsAddPaymentModalOpen
+        }) {
+            const isLoggedIn = currentView !== "home" && currentView !== "login" && currentView !== "apply";
+            const [isProfileOpen, setIsProfileOpen] = useState(false);
+            const [searchQuery, setSearchQuery] = useState("");
+            const [retailMode, setRetailMode] = useState(false);
+            const [catalogMode, setCatalogMode] = useState(false);
+            const profileRef = useRef(null);
+
+            // Context Bar States
+            const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState(false);
+            const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
+            const locationDropdownRef = useRef(null);
+
+            useEffect(() => {
+                function handleClickOutside(event) {
+                    if (profileRef.current && !profileRef.current.contains(event.target)) {
+                        setIsProfileOpen(false);
+                    }
+                    if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target)) {
+                        setIsLocationDropdownOpen(false);
+                    }
+                }
+                document.addEventListener("mousedown", handleClickOutside);
+                return () => {
+                    document.removeEventListener("mousedown", handleClickOutside);
+                };
+            }, []);
+
+            return (
+                <header className="relative flex-shrink-0 flex flex-col w-full shadow-sm z-[100]">
+                    {/* Public nav */}
+                    {!isLoggedIn && (
+                        <div className="h-20 bg-slate-50 border-b border-slate-200">
+                            <div className="max-w-[1380px] mx-auto px-6 h-full">
+                                <div className="flex justify-between items-center h-full">
+                                    <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => navigateTo("home")}>
+                                        <OewLogo className="h-8 md:h-10 w-auto" fill="#1d4ed8" />
+                                    </div>
+                                    <nav className="hidden md:flex space-x-8 items-center">
+                                        <button onClick={() => navigateTo("home")} className="text-slate-600 hover:text-blue-600 font-medium">Home</button>
+                                        <a href="#brands" className="text-slate-600 hover:text-blue-600 font-medium">Our Brands</a>
+                                        <a href="#about" className="text-slate-600 hover:text-blue-600 font-medium">About Us</a>
+                                        <div className="flex items-center space-x-4 border-l pl-6 border-slate-200">
+                                            <button onClick={() => navigateTo("login")} className="flex items-center text-slate-700 hover:text-blue-600 font-semibold">
+                                                <LogIn className="w-4 h-4 mr-2" /> Dealer Login
+                                            </button>
+                                            <button onClick={() => navigateTo("apply")} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-md font-semibold transition-colors shadow-sm">
+                                                Apply Now
+                                            </button>
+                                        </div>
+                                    </nav>
+                                    <div className="lg:hidden flex items-center">
+                                        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-slate-500 hover:text-slate-700">
+                                            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Authenticated nav */}
+                    {isLoggedIn && (
+                        <div className="flex flex-col w-full">
+                            
+                            {/* Context Bar (Topmost strip) */}
+                            <div className="bg-slate-100 border-b border-slate-300 w-full h-11 flex items-center justify-between z-[110] relative">
+                                <div className="max-w-[1380px] mx-auto px-6 w-full flex justify-between items-center h-full">
+                                    {/* Left side: Store Location */}
+                                    <div className="flex items-center relative h-full" ref={locationDropdownRef}>
+                                        <MapPin className="w-4 h-4 text-slate-500 mr-1.5" />
+                                        <button 
+                                            className="flex items-center space-x-1 group"
+                                            onClick={() => setIsLocationDropdownOpen(!isLocationDropdownOpen)}
+                                        >
+                                            <span className="font-bold text-[13px] text-slate-800 transition-colors">O.E. WHEEL DISTRIBUTORS, LLC</span>
+                                            <ChevronDown className="w-4 h-4 text-slate-500 ml-1" />
+                                        </button>
+                                        <button 
+                                            onClick={() => setIsStoreModalOpen(true)}
+                                            className="border border-slate-300 rounded px-3 py-1 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors ml-3"
+                                        >
+                                            Change
+                                        </button>
+
+                                        {/* Location Expanded Dropdown */}
+                                        {isLocationDropdownOpen && (
+                                            <div className="absolute top-[36px] left-0 w-72 bg-white border border-slate-200 rounded-lg shadow-lg py-3 px-4 z-[9999] pointer-events-auto">
+                                                <p className="font-bold text-[14px] text-slate-900 mb-1">O.E. WHEEL DISTRIBUTORS, LLC</p>
+                                                <p className="text-[12px] text-slate-600 mb-0.5">1916 72nd Dr E, Sarasota, FL 34243</p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Right side: Sales Rep */}
+                                    <div className="hidden sm:flex items-center">
+                                        <User className="w-4 h-4 text-slate-500 mr-1.5" />
+                                        <span className="text-[11px] text-slate-500 mr-1.5">Sales Rep:</span>
+                                        <span className="font-bold text-[12px] text-slate-800">Akshay Akulwar</span>
+                                        <span className="text-slate-300 mx-2">|</span>
+                                        <Phone className="w-3 h-3 text-slate-500 mr-1" />
+                                        <span className="text-[12px] text-slate-600 mr-1">Direct Line:</span>
+                                        <a href="tel:9419210065" className="text-[12px] text-slate-600">941-921-0065</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Row 1 — Logo, Search, Account/Tools */}
+                            <div className="h-16 bg-slate-50 border-b border-slate-100 w-full">
+                                <div className="max-w-[1380px] mx-auto px-6 h-full flex items-center justify-between w-full">
+                                    <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => navigateTo('dashboard')}>
+                                        <OewLogo className="h-10 w-auto" fill="#1d4ed8" />
+                                    </div>
+                                    
+                                    <div className="flex-1 max-w-lg mx-6 relative group hidden md:flex items-center">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <Search className="h-4 w-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                                        </div>
+                                        <input type="text" className="block w-full pl-10 pr-24 py-3 border-0 ring-1 ring-slate-200 rounded-full bg-white shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium transition-all" placeholder="Search by SKU, Vehicle or Brand..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                                        <button className="absolute inset-y-1.5 bottom-1.5 top-1.5 right-1.5 bg-blue-600 hover:bg-blue-700 text-white px-7 rounded-full font-bold text-xs transition-colors shadow-sm flex items-center justify-center">Search</button>
+                                    </div>
+
+                                    <div className="flex items-center h-full flex-shrink-0">
+                                        <div className="hidden lg:flex items-center space-x-6 mr-6 h-full">
+                                            <button onClick={() => navigateTo('orders')} className={`${currentView === 'orders' ? 'text-blue-600 border-b-2 border-blue-600 h-16 pt-[2px]' : 'text-slate-600 hover:text-blue-600'} flex items-center font-bold text-[13px] transition-all h-full`}>
+                                                <Package className="w-5 h-5 mr-1.5 text-slate-500" strokeWidth={1.5} /> My Orders
+                                            </button>
+                                            <button onClick={() => navigateTo('invoices')} className={`${currentView === 'invoices' ? 'text-blue-600 border-b-2 border-blue-600 h-16 pt-[2px]' : 'text-slate-600 hover:text-blue-600'} flex items-center font-bold text-[13px] transition-all h-full`}>
+                                                <ListIcon className="w-5 h-5 mr-1.5 text-slate-500" strokeWidth={1.5} /> My Invoices
+                                            </button>
+                                            <button onClick={() => navigateTo('quotes')} className={`${currentView === 'quotes' ? 'text-blue-600 border-b-2 border-blue-600 h-16 pt-[2px]' : 'text-slate-600 hover:text-blue-600'} flex items-center font-bold text-[13px] transition-all h-full`}>
+                                                <FileText className="w-5 h-5 mr-1.5 text-slate-500" strokeWidth={1.5} /> My Quotes
+                                            </button>
+                                        </div>
+                                        <div className="hidden lg:block h-6 border-l border-slate-300 mr-6"></div>
+                                        <div className="relative h-full flex items-center" ref={profileRef}>
+                                            <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center cursor-pointer p-1 rounded-md transition-colors">
+                                                <div className="hidden md:flex flex-col text-right mr-3">
+                                                    <span className="text-[13px] font-extrabold text-slate-900 leading-tight">My Account</span>
+                                                </div>
+                                                <div className="w-8 h-8 bg-[#1e293b] text-white rounded-full flex items-center justify-center font-bold shadow-sm text-xs">JD</div>
+                                            </button>
+                                            <button className="text-slate-700 hover:text-blue-600 relative ml-6 mr-2">
+                                                <ShoppingCart className="w-5 h-5" strokeWidth={1.5} />
+                                                <span className="absolute -top-2.5 -right-3 bg-blue-600 text-white text-[10px] font-bold rounded-full h-[20px] min-w-[20px] px-1 flex items-center justify-center border-2 border-white shadow-sm">10</span>
+                                            </button>
+                                            {isProfileOpen && (
+                                                <div className="absolute right-0 top-[52px] w-72 bg-white border border-slate-200 rounded-lg shadow-xl py-2 z-[9999] pointer-events-auto">
+                                                    <div className="px-4 py-3 border-b border-slate-100">
+                                                        <p className="text-sm font-semibold text-slate-900">John Doe</p>
+                                                        <p className="text-xs text-slate-500 truncate">luckytire@ymail.com</p>
+                                                    </div>
+                                                    
+                                                    <div className="flex flex-col border-b border-slate-100">
+                                                        <div className="flex items-center justify-between px-4 py-3">
+                                                            <div className="flex items-start gap-2">
+                                                                <Tag className="w-4 h-4 text-slate-500 mt-0.5" />
+                                                                <div>
+                                                                    <p className="font-bold text-[13px] text-slate-900">Retail Mode</p>
+                                                                    <p className="text-[11px] text-slate-500">Hide all wholesale pricing sitewide</p>
+                                                                </div>
+                                                            </div>
+                                                            <button 
+                                                                onClick={() => setRetailMode(!retailMode)}
+                                                                className={`flex-shrink-0 w-10 h-6 rounded-full transition-colors flex items-center px-0.5 ${retailMode ? 'bg-blue-600' : 'bg-slate-200'}`}
+                                                            >
+                                                                <div className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${retailMode ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                                                            </button>
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100">
+                                                            <div className="flex items-start gap-2">
+                                                                <Grid className="w-4 h-4 text-slate-500 mt-0.5" />
+                                                                <div>
+                                                                    <p className="font-bold text-[13px] text-slate-900">Catalog Mode</p>
+                                                                    <p className="text-[11px] text-slate-500">Hide all pricing sitewide</p>
+                                                                </div>
+                                                            </div>
+                                                            <button 
+                                                                onClick={() => setCatalogMode(!catalogMode)}
+                                                                className={`flex-shrink-0 w-10 h-6 rounded-full transition-colors flex items-center px-0.5 ${catalogMode ? 'bg-blue-600' : 'bg-slate-200'}`}
+                                                            >
+                                                                <div className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${catalogMode ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="py-1 border-b border-slate-100">
+                                                        <button onClick={() => { setIsProfileOpen(false); navigateTo('my-profile'); }} className="flex w-full items-center px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 font-medium">
+                                                            <Settings className="w-4 h-4 mr-3 text-slate-400" /> My Profile
+                                                        </button>
+                                                        <button className="flex w-full items-center px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 font-medium">
+                                                            <CircleHelp className="w-4 h-4 mr-3 text-slate-400" /> Dealer Support
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <div className="py-1">
+                                                        <button onClick={() => navigateTo('home')} className="flex w-full items-center px-4 py-2 text-[13px] text-red-500 hover:bg-red-50 font-medium">
+                                                            <LogOut className="w-4 h-4 mr-3 text-red-500" /> Sign Out
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="lg:hidden flex items-center ml-4">
+                                            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-slate-500 hover:text-slate-700">
+                                                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Row 2 — Nav Links */}
+                            <div className="h-10 bg-white border-b border-slate-200 hidden lg:block w-full">
+                                <div className="max-w-[1380px] mx-auto px-6 h-full flex items-center justify-center">
+                                    <nav className="flex items-center justify-center gap-8 text-[14px] font-extrabold text-slate-600 tracking-wider uppercase h-full w-full">
+                                        <button onClick={() => navigateTo('dashboard')} className={`${currentView === 'dashboard' ? 'text-blue-600 border-b-2 border-blue-600 h-10 pt-[2px]' : 'hover:text-blue-600'} transition-colors h-full flex items-center`}>Home</button>
+                                        <button className="hover:text-blue-600 transition-colors h-full flex items-center">All Products</button>
+                                        <button className="hover:text-blue-600 transition-colors h-full flex items-center">Promotions</button>
+                                        <button className="hover:text-blue-600 transition-colors h-full flex items-center">New Arrivals</button>
+                                        <button className="text-red-600 hover:text-red-700 transition-colors flex items-center h-full">Clearance <Package className="w-4 h-4 ml-1.5" /></button>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Choose Your Store Modal */}
+                    {isStoreModalOpen && (
+                        <div className="fixed inset-0 bg-slate-900/50 z-[99999] flex items-center justify-center p-4">
+                            <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
+                                <div className="flex justify-between items-center p-5 border-b border-slate-100">
+                                    <h2 className="text-xl font-bold text-slate-900">Choose Your Store</h2>
+                                    <button onClick={() => setIsStoreModalOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                        <X className="w-6 h-6" />
+                                    </button>
+                                </div>
+                                <div className="p-6 overflow-y-auto max-h-[70vh] hide-scrollbar">
+                                    <div className="relative mb-6">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <Search className="h-5 w-5 text-slate-400" />
+                                        </div>
+                                        <input type="text" className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="Store Search" />
+                                    </div>
+                                    
+                                    <div>
+                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Ship To</p>
+                                        <div className="space-y-3">
+                                            {/* Location 1 */}
+                                            <div className="bg-white border border-slate-200 rounded-lg p-4 flex justify-between items-center">
+                                                <div>
+                                                    <h3 className="font-bold text-[14px] text-[#1e3a6e] mb-1">OE WHEELS DISTRIBUTORS LLC</h3>
+                                                    <p className="text-[12px] text-slate-600">1916 72nd Dr E, Sarasota, FL 34243</p>
+                                                </div>
+                                                <div className="flex items-center ml-4 flex-shrink-0">
+                                                    <button onClick={() => setIsStoreModalOpen(false)} className="px-4 py-1.5 border border-slate-300 text-slate-700 font-bold text-sm rounded-md hover:bg-slate-50 transition-colors">
+                                                        Choose
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Location 2 */}
+                                            <div className="bg-white border border-slate-200 rounded-lg p-4 flex justify-between items-center">
+                                                <div>
+                                                    <h3 className="font-bold text-[14px] text-[#1e3a6e] mb-1">OE WHEELS DISTRIBUTORS LLC — HOUSTON</h3>
+                                                    <p className="text-[12px] text-slate-600">12170 Bissonnet St, Houston, TX 77099</p>
+                                                </div>
+                                                <div className="flex items-center ml-4 flex-shrink-0">
+                                                    <button onClick={() => setIsStoreModalOpen(false)} className="px-4 py-1.5 border border-slate-300 text-slate-700 font-bold text-sm rounded-md hover:bg-slate-50 transition-colors">
+                                                        Choose
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Location 3 */}
+                                            <div className="bg-white border border-slate-200 rounded-lg p-4 flex justify-between items-center">
+                                                <div>
+                                                    <h3 className="font-bold text-[14px] text-[#1e3a6e] mb-1">OE WHEELS DISTRIBUTORS LLC — EL SEGUNDO</h3>
+                                                    <p className="text-[12px] text-slate-600">2250 E Maple Ave, El Segundo, CA 90245</p>
+                                                </div>
+                                                <div className="flex items-center ml-4 flex-shrink-0">
+                                                    <button onClick={() => setIsStoreModalOpen(false)} className="px-4 py-1.5 border border-slate-300 text-slate-700 font-bold text-sm rounded-md hover:bg-slate-50 transition-colors">
+                                                        Choose
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Add Payment Method Modal */}
+                    {isAddPaymentModalOpen && (
+                        <div className="fixed inset-0 bg-slate-900/50 z-[100000] flex items-center justify-center p-4">
+                            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md flex flex-col max-h-[90vh]">
+                                <div className="flex justify-between items-center p-5 border-b border-slate-100 rounded-t-xl bg-white">
+                                    <h2 className="text-xl font-bold text-slate-900">Add payment method</h2>
+                                    <button onClick={() => setIsAddPaymentModalOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                        <X className="w-6 h-6" />
+                                    </button>
+                                </div>
+                                <div className="p-6 overflow-y-auto">
+                                    <h3 className="font-bold text-[14px] text-slate-900 mb-4">Credit or debit card</h3>
+                                    
+                                    <div className="space-y-4 mb-6">
+                                        <div className="relative">
+                                            <input type="text" placeholder="Card number" className="w-full p-2.5 pr-10 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <Lock className="w-4 h-4 text-slate-400" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <input type="text" placeholder="Name on card" className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <input type="text" placeholder="Expiration date (MM / YY)" className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                            <div className="relative">
+                                                <input type="text" placeholder="Security code" className="w-full p-2.5 pr-10 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                    <CircleHelp className="w-4 h-4 text-slate-400" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <h3 className="font-bold text-[14px] text-slate-900">Billing address</h3>
+                                            {!isAddingNewAddress ? (
+                                                <button onClick={() => setIsAddingNewAddress(true)} className="text-blue-600 text-sm hover:underline">+ Add new address</button>
+                                            ) : (
+                                                <button onClick={() => setIsAddingNewAddress(false)} className="text-blue-600 text-sm hover:underline flex items-center">
+                                                    <ListIcon className="w-4 h-4 mr-1" /> Choose from list
+                                                </button>
+                                            )}
+                                        </div>
+                                        
+                                        {!isAddingNewAddress ? (
+                                            <div className="bg-white border-2 border-blue-600 rounded-lg p-3 relative shadow-sm cursor-pointer">
+                                                <div className="absolute top-3 right-3 w-4 h-4 rounded-full border-4 border-blue-600 bg-white"></div>
+                                                <p className="font-bold text-[13px] text-slate-900 mb-0.5 pr-6">O.E. Wheel Distributors, LLC</p>
+                                                <p className="text-[12px] text-slate-600">1916 72ND DR E, Sarasota, FL 34243, United States</p>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-4">
+                                                <div className="relative">
+                                                    <select className="w-full p-2.5 pr-10 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white text-slate-700">
+                                                        <option>🇺🇸 United States</option>
+                                                    </select>
+                                                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <input type="text" placeholder="First name" className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                    <input type="text" placeholder="Last name" className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                </div>
+                                                
+                                                <input type="text" placeholder="Company / Attention (optional)" className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                <input type="text" placeholder="Address" className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                <input type="text" placeholder="Apartment, suite, etc. (optional)" className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                
+                                                <div className="flex gap-4">
+                                                    <input type="text" placeholder="City" className="w-[35%] p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                    <div className="relative w-[35%]">
+                                                        <select className="w-full p-2.5 pr-8 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white text-slate-700">
+                                                            <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                                                        </select>
+                                                        <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                                            <ChevronDown className="w-4 h-4 text-slate-400" />
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" placeholder="ZIP code" className="w-[30%] p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                </div>
+                                                
+                                                <div className="relative">
+                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                        <span className="text-slate-500 text-sm font-medium">+1</span>
+                                                    </div>
+                                                    <input type="tel" placeholder="Phone" className="w-full py-2.5 pl-9 pr-10 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                        <span className="text-lg">🇺🇸</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    <p className="text-[12px] text-slate-400 italic">This payment method will be saved for future purchases.</p>
+                                </div>
+                                
+                                <div className="bg-slate-50 border-t border-slate-200 p-4 flex justify-end items-center space-x-4 rounded-b-xl">
+                                    <button onClick={() => setIsAddPaymentModalOpen(false)} className="text-sm font-medium text-slate-600 hover:text-slate-900">Cancel</button>
+                                    <button onClick={() => setIsAddPaymentModalOpen(false)} className="bg-slate-900 hover:bg-black text-white font-bold py-2 px-6 rounded-md shadow-sm transition-colors">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </header>
+            );
+        }
+
+        // ── COLLECTION CARD ──
+        function CollectionCard({ item }) {
+            return (
+                <div className="min-w-[320px] w-[320px] h-[260px] bg-slate-900 rounded-xl overflow-hidden relative flex flex-col snap-start group shadow-sm border border-slate-800 cursor-pointer">
+                    <img src={item.img} alt={item.title} className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 transition-all duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 p-6 flex flex-col justify-end w-full z-10">
+                        <h3 className="text-white font-bold text-2xl mb-1 drop-shadow-md">{item.title}</h3>
+                        <p className="text-slate-300 text-sm mb-5 line-clamp-2 drop-shadow">{item.subtitle}</p>
+                        <button className="bg-[#274070] hover:bg-blue-600 text-white text-sm font-bold py-2.5 px-6 rounded shadow-md transition-colors w-max">{item.linkText || "Shop Now"}</button>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── SLIDER SECTION ──
+        function SliderSection({ title, icon, items, collectionLink }) {
+            const scrollRef = useRef(null);
+            const scroll = (direction) => {
+                if (scrollRef.current) {
+                    const { scrollLeft, clientWidth } = scrollRef.current;
+                    const scrollTo = direction === "left" ? scrollLeft - clientWidth + 50 : scrollLeft + clientWidth - 50;
+                    scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+                }
+            };
+            return (
+                <section>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-2xl font-extrabold text-slate-900 flex items-center">{icon} {title}</h2>
+                        <div className="flex items-center space-x-4">
+                            <button className="text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-full transition-colors flex items-center">View {collectionLink} <ArrowRight className="w-4 h-4 ml-1" /></button>
+                            <div className="hidden md:flex space-x-2">
+                                <button onClick={() => scroll("left")} className="p-2 rounded-full border border-slate-300 hover:bg-slate-100 text-slate-600 transition-colors"><ChevronLeft className="w-5 h-5" /></button>
+                                <button onClick={() => scroll("right")} className="p-2 rounded-full border border-slate-300 hover:bg-slate-100 text-slate-600 transition-colors"><ChevronRight className="w-5 h-5" /></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div ref={scrollRef} className="flex overflow-x-auto gap-6 pb-6 snap-x hide-scrollbar scroll-smooth">
+                        {items.map((item) => <CollectionCard key={item.id} item={item} />)}
+                    </div>
+                </section>
+            );
+        }
+
+        // ── DASHBOARD VIEW ──
+        function DashboardView({ navigateTo }) {
+            const [activeTab, setActiveTab] = useState("vehicle");
+            const [year, setYear] = useState('');
+            const [make, setMake] = useState('');
+            const [model, setModel] = useState('');
+            const [diameter, setDiameter] = useState('');
+            const [width, setWidth] = useState('');
+            const [boltPattern, setBoltPattern] = useState('');
+
+            // Tracking Widget State
+            const [trackInput, setTrackInput] = useState('');
+            const [trackError, setTrackError] = useState('');
+            const [isTracking, setIsTracking] = useState(false);
+            const [trackedPO, setTrackedPO] = useState('');
+
+            const handleTrackShipment = () => {
+                if (trackInput.trim().length < 5) {
+                    setTrackError("Please enter a valid Order # or PO #");
+                } else {
+                    setTrackError("");
+                    setTrackedPO(trackInput.trim());
+                    setIsTracking(true);
+                }
+            };
+
+            const resetTracking = () => {
+                setIsTracking(false);
+                setTrackInput("");
+                setTrackError("");
+                setTrackedPO("");
+            };
+
+            // Invoice Lookup Widget State
+            const [invoiceInput, setInvoiceInput] = useState('');
+            const [invoiceError, setInvoiceError] = useState('');
+            const [isInvoiceSearching, setIsInvoiceSearching] = useState(false);
+            const [searchedInvoicePO, setSearchedInvoicePO] = useState('');
+
+            const handleFindInvoices = () => {
+                if (invoiceInput.trim().length < 5) {
+                    setInvoiceError("Please enter a valid Order # or PO #");
+                } else {
+                    setInvoiceError("");
+                    setSearchedInvoicePO(invoiceInput.trim());
+                    setIsInvoiceSearching(true);
+                }
+            };
+
+            const resetInvoiceSearch = () => {
+                setIsInvoiceSearching(false);
+                setInvoiceInput("");
+                setInvoiceError("");
+                setSearchedInvoicePO("");
+            };
+
+            const openPayModal = (invoiceId, amount) => {
+                console.log(`Opening pay modal for Invoice ${invoiceId}, Amount $${amount}`);
+            };
+
+            const promotions = [
+                { id: 1, title: "GM 6-Lug", subtitle: "Fits Silverado, Sierra, Tahoe, Colorado, Suburban, and more...", img: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=600&q=80", linkText: "Shop Now" },
+                { id: 2, title: "Corvette", subtitle: "Fits C8, Corvette, and more...", img: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80", linkText: "Shop Now" },
+                { id: 3, title: "Mustang", subtitle: "Fits Mustang, and more...", img: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80", linkText: "Shop Now" },
+                { id: 4, title: "RAM", subtitle: "Fits 1500, TRX, and more...", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80", linkText: "Shop Now" }
+            ];
+            const newArrivals = [
+                { id: 5, title: "Off-Road Series", subtitle: "Aggressive styling for lifted trucks...", img: "https://images.unsplash.com/photo-1559416523-140ddc3d238c?auto=format&fit=crop&w=600&q=80", linkText: "Shop Now" },
+                { id: 6, title: "Track Editions", subtitle: "Lightweight performance wheels...", img: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80", linkText: "Shop Now" },
+                { id: 7, title: "Luxury SUVs", subtitle: "Premium fitments for Escalade, Yukon...", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80", linkText: "Shop Now" },
+                { id: 8, title: "Classic Muscle", subtitle: "Retro styling with modern sizing...", img: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80", linkText: "Shop Now" }
+            ];
+            const clearance = [
+                { id: 13, title: "Clearance 20x9 Set", subtitle: "Overstock pricing, limited qty...", img: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80", linkText: "Shop Clearance" },
+                { id: 14, title: "OE Tahoe 22x9 Machined", subtitle: "Discontinued finish...", img: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=600&q=80", linkText: "Shop Clearance" },
+                { id: 15, title: "4PLAY 4P05 20x10", subtitle: "Previous generation models...", img: "https://images.unsplash.com/photo-1559416523-140ddc3d238c?auto=format&fit=crop&w=600&q=80", linkText: "Shop Clearance" },
+                { id: 16, title: "DEFIANT DF02 20x9", subtitle: "Open box, like new...", img: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80", linkText: "Shop Clearance" }
+            ];
+            const bestSellers = [
+                { id: 9,  title: "Top Chevy/GMC", subtitle: "Our most popular 6-lug designs...", img: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=600&q=80", linkText: "Explore Wheels" },
+                { id: 10, title: "Ford F-150", subtitle: "Direct fit replacements and upgrades...", img: "https://images.unsplash.com/photo-1559416523-140ddc3d238c?auto=format&fit=crop&w=600&q=80", linkText: "Explore Wheels" },
+                { id: 11, title: "Mopar Fitments", subtitle: "Charger, Challenger, and 300...", img: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80", linkText: "Explore Wheels" },
+                { id: 12, title: "Jeep Wrangler", subtitle: "Tackle any terrain with these sellers...", img: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80", linkText: "Explore Wheels" }
+            ];
+
+            return (
+                <div className="w-full flex-1 bg-slate-50">
+                    
+                    {/* Fitment sticky band */}
+                    <div className="sticky top-0 z-50 bg-transparent py-0">
+                        <div className="max-w-[1380px] mx-auto px-6 w-full">
+                            <div className="bg-white rounded-b-xl border border-slate-200 border-t-0 overflow-hidden">
+                                <div className="flex border-b border-slate-200 bg-slate-50">
+                                    <button onClick={() => setActiveTab("vehicle")} className={`flex-1 flex items-center justify-center py-2 text-[13px] font-bold transition-colors ${activeTab === "vehicle" ? "bg-white text-blue-700 border-b-2 border-blue-600 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] z-10" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"}`}>
+                                        <Car className={`mr-2 h-5 w-5 ${activeTab === "vehicle" ? "text-blue-600" : "text-slate-400"}`} />Search by Vehicle
+                                    </button>
+                                    <button onClick={() => setActiveTab("spec")} className={`flex-1 flex items-center justify-center py-2 text-[13px] font-bold transition-colors border-l border-slate-200 ${activeTab === "spec" ? "bg-white text-blue-700 border-b-2 border-blue-600 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] z-10" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"}`}>
+                                        <SlidersVertical className={`mr-2 h-5 w-5 ${activeTab === "spec" ? "text-blue-600" : "text-slate-400"}`} />Search by Specification
+                                    </button>
+                                    <button onClick={() => setActiveTab("part")} className={`flex-1 flex items-center justify-center py-2 text-[13px] font-bold transition-colors border-l border-slate-200 ${activeTab === "part" ? "bg-white text-blue-700 border-b-2 border-blue-600 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] z-10" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"}`}>
+                                        <Hash className={`mr-2 h-5 w-5 ${activeTab === "part" ? "text-blue-600" : "text-slate-400"}`} />Search by Part No
+                                    </button>
+                                </div>
+                                <div className="p-3 bg-white">
+                                    {activeTab === "vehicle" && (
+                                        <div className="flex flex-col lg:flex-row gap-4 items-center">
+                                            <select value={year} onChange={(e) => setYear(e.target.value)} className="w-full lg:flex-1 py-1.5 px-3 text-[13px] border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm min-w-0"><option value="">Select Year</option><option value="2026">2026</option></select>
+                                            <select value={make} onChange={(e) => setMake(e.target.value)} className="w-full lg:flex-1 py-1.5 px-3 text-[13px] border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm min-w-0"><option value="">Select Make</option><option value="Chevrolet">Chevrolet</option></select>
+                                            <select value={model} onChange={(e) => setModel(e.target.value)} className="w-full lg:flex-1 py-1.5 px-3 text-[13px] border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm min-w-0"><option value="">Select Model</option><option value="Silverado 1500">Silverado 1500</option></select>
+                                            <button className="w-full lg:w-auto flex-none bg-slate-900 text-white py-1.5 px-6 rounded-lg font-bold hover:bg-slate-800 shadow-md transition-colors flex items-center justify-center whitespace-nowrap text-[13px]">Find Fitment <ArrowRight className="w-4 h-4 ml-2" /></button>
+                                            <button onClick={() => { setYear(''); setMake(''); setModel(''); }} className="w-full lg:w-auto flex-none border border-slate-300 text-slate-600 py-1.5 px-4 rounded-lg font-bold hover:bg-slate-50 transition-colors whitespace-nowrap text-[13px]">Clear</button>
+                                        </div>
+                                    )}
+                                    {activeTab === "spec" && (
+                                        <div className="flex flex-col lg:flex-row gap-4 items-center">
+                                            <select value={diameter} onChange={(e) => setDiameter(e.target.value)} className="w-full lg:flex-1 py-1.5 px-3 text-[13px] border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm min-w-0"><option value="">Diameter (e.g., 20")</option></select>
+                                            <select value={width} onChange={(e) => setWidth(e.target.value)} className="w-full lg:flex-1 py-1.5 px-3 text-[13px] border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm min-w-0"><option value="">Width (e.g., 9")</option></select>
+                                            <select value={boltPattern} onChange={(e) => setBoltPattern(e.target.value)} className="w-full lg:flex-1 py-1.5 px-3 text-[13px] border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm min-w-0"><option value="">Bolt Pattern</option></select>
+                                            <button className="w-full lg:w-auto flex-none bg-slate-900 text-white py-1.5 px-6 rounded-lg font-bold hover:bg-slate-800 shadow-md transition-colors flex items-center justify-center whitespace-nowrap text-[13px]">Filter Specs <ArrowRight className="w-4 h-4 ml-2" /></button>
+                                            <button onClick={() => { setDiameter(''); setWidth(''); setBoltPattern(''); }} className="w-full lg:w-auto flex-none border border-slate-300 text-slate-600 py-1.5 px-4 rounded-lg font-bold hover:bg-slate-50 transition-colors whitespace-nowrap text-[13px]">Clear</button>
+                                        </div>
+                                    )}
+                                    {activeTab === "part" && (
+                                        <div className="flex flex-col lg:flex-row gap-4 items-center">
+                                            <div className="w-full lg:flex-[2] min-w-0">
+                                                <input type="text" placeholder="Enter Part Number or SKU" className="w-full py-1.5 px-3 text-[13px] border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm" />
+                                            </div>
+                                            <div className="w-full lg:flex-1 min-w-0">
+                                                <input type="number" placeholder="Qty" defaultValue="4" min="1" className="w-full py-1.5 px-3 text-[13px] border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm" />
+                                            </div>
+                                            <button className="w-full lg:w-auto flex-none bg-blue-600 text-white py-1.5 px-6 rounded-lg font-bold hover:bg-blue-700 shadow-md transition-colors flex items-center justify-center whitespace-nowrap text-[13px]"><ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main content + sidebar */}
+                    <div className="max-w-[1380px] mx-auto px-6 flex items-start w-full">
+                        <main className="flex-1 min-w-0 py-6 lg:py-10">
+                            {/* Sliders */}
+                            <div className="space-y-12">
+                                <SliderSection title="Active Promotions" icon={<Tag className="w-6 h-6 mr-3 text-red-500" />} items={promotions} collectionLink="Sale Items" />
+                                    <SliderSection title="Clearance" icon={<Percent className="w-6 h-6 mr-3 text-orange-500" />} items={clearance} collectionLink="Clearance" />
+                                    <SliderSection title="New Arrivals" icon={<Star className="w-6 h-6 mr-3 text-yellow-500" />} items={newArrivals} collectionLink="New Products" />
+                                    <SliderSection title="Best Sellers" icon={<TrendingUp className="w-6 h-6 mr-3 text-green-500" />} items={bestSellers} collectionLink="Top Sellers" />
+
+                                    {/* Our Premium Brands */}
+                                    <section className="pt-12 mb-8">
+                                        <div className="text-center mb-10">
+                                            <h2 className="text-2xl font-black text-slate-800 uppercase tracking-wide">Our Premium Brands</h2>
+                                            <div className="w-16 h-1 bg-blue-600 mx-auto mt-4"></div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                                            {[
+                                                { name: "4PLAY", img: "https://images.unsplash.com/photo-1559416523-140ddc3d238c?auto=format&fit=crop&w=600&q=80", desc: "Explore Wide Range of High-Quality Wheels Tailored to Off-Road Enthusiasts.", cta: "Shop 4PLAY", logo: <><span className="text-red-600 text-3xl font-black italic drop-shadow-md">4</span><span className="text-white text-3xl font-black italic tracking-widest drop-shadow-md">PLAY</span></> },
+                                                { name: "DEFIANT", img: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80", desc: "Precision Fitment with Model Specific Styles for the Modern Truck.", cta: "Shop DEFIANT", logo: <span className="text-white text-3xl font-black italic tracking-widest uppercase drop-shadow-md">DEFIANT</span> },
+                                                { name: "OE Replica Wheels", img: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80", desc: "Factory-Style Performance, Classic & Modern Designs for Every Make.", cta: "Shop OE Replica", logo: <span className="text-white text-2xl font-black tracking-wide drop-shadow-md">OE Replica Wheels</span> },
+                                                { name: "OEM Wheels", img: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=600&q=80", desc: "Original Equipment Wheels providing factory direct fitment and uncompromising quality.", cta: "Shop OEM Wheels", logo: <span className="text-white text-2xl font-black tracking-wide drop-shadow-md">OEM Wheels</span> }
+                                            ].map((brand) => (
+                                                <div key={brand.name} className="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden flex flex-col group">
+                                                    <div className="h-56 relative overflow-hidden">
+                                                        <img src={brand.img} alt={brand.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-6">
+                                                            <div className="flex items-center">{brand.logo}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="p-6 flex flex-col flex-1">
+                                                        <p className="font-bold text-slate-800 mb-6 flex-1 text-[15px] leading-relaxed">{brand.desc}</p>
+                                                        <button className="text-blue-600 font-bold text-sm flex items-center hover:text-blue-800 transition-colors">{brand.cta} <ChevronRight className="w-4 h-4 ml-1" /></button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </section>
+                                </div>
+                        </main>
+
+                        {/* Right Sidebar */}
+                        <aside className="w-72 flex-shrink-0 ml-8 bg-white border-l border-slate-200 hidden lg:flex flex-col sticky top-[88px] self-start h-[calc(100vh-88px)] overflow-y-auto z-10 shadow-[-2px_0_8px_-4px_rgba(0,0,0,0.1)]">
+                            <div className="p-6 space-y-8">
+                                
+                                {/* Order Tracking Widget */}
+                                <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full -mr-8 -mt-8 opacity-50 pointer-events-none"></div>
+                                    <h3 className="font-bold text-slate-900 text-lg mb-1 flex items-center"><Truck className="w-5 h-5 mr-2 text-blue-600" /> Order Tracking</h3>
+                                    <p className="text-xs text-slate-500 mb-4">Quickly locate shipments via UPS/FedEx</p>
+                                    
+                                    {!isTracking ? (
+                                        <div className="space-y-3">
+                                            <div>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Enter Order # or PO #" 
+                                                    className="w-full text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                                    value={trackInput}
+                                                    onChange={(e) => {
+                                                        setTrackInput(e.target.value);
+                                                        if (trackError) setTrackError("");
+                                                    }}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleTrackShipment()}
+                                                />
+                                                {trackError && <p className="text-red-500 text-[11px] mt-1">{trackError}</p>}
+                                            </div>
+                                            <button onClick={handleTrackShipment} className="w-full bg-slate-900 text-white font-bold text-sm py-2.5 rounded-lg hover:bg-slate-800 transition-colors shadow-sm">Track Shipment</button>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2">
+                                            <p className="font-bold text-[13px] text-slate-700 mb-2">Results for PO #{trackedPO}</p>
+                                            <div className="h-px bg-slate-200 mb-1"></div>
+                                            <div className="flex flex-col">
+                                                {[
+                                                    { track: "1ZF186H70318522540", eta: "Apr 25, 2026" },
+                                                    { track: "1ZF186H70302131359", eta: "Apr 25, 2026" },
+                                                    { track: "1ZF186H70303149768", eta: "Apr 26, 2026" },
+                                                    { track: "1ZF186H70307113771", eta: "Apr 26, 2026" }
+                                                ].map((item, idx) => (
+                                                    <div key={idx} className={`py-1.5 ${idx !== 3 ? 'border-b border-slate-100' : ''}`}>
+                                                        <div className="flex justify-between items-center mb-0.5">
+                                                            <a href={`https://www.ups.com/track?loc=en_US&tracknum=${item.track}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-bold text-[12px] font-mono hover:underline">
+                                                                {item.track}
+                                                            </a>
+                                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-700 text-white leading-none">UPS</span>
+                                                        </div>
+                                                        <p className="text-slate-500 text-[12px]">Est. Delivery: {item.eta}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <button onClick={resetTracking} className="mt-2 text-slate-400 text-[12px] hover:text-slate-600 transition-colors w-full text-center block underline underline-offset-2">
+                                                Track Another Shipment
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Invoice Lookup Widget */}
+                                <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-16 h-16 bg-green-100 rounded-bl-full -mr-8 -mt-8 opacity-50 pointer-events-none"></div>
+                                    <h3 className="font-bold text-slate-900 text-lg mb-1 flex items-center"><FileText className="w-5 h-5 mr-2 text-green-600" /> Invoice Lookup</h3>
+                                    <p className="text-xs text-slate-500 mb-4">Retrieve invoices and statements</p>
+                                    
+                                    {!isInvoiceSearching ? (
+                                        <div className="space-y-3">
+                                            <div>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Order # or PO #" 
+                                                    className="w-full text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                                                    value={invoiceInput}
+                                                    onChange={(e) => {
+                                                        setInvoiceInput(e.target.value);
+                                                        if (invoiceError) setInvoiceError("");
+                                                    }}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleFindInvoices()}
+                                                />
+                                                {invoiceError && <p className="text-red-500 text-[11px] mt-1">{invoiceError}</p>}
+                                            </div>
+                                            <div className="flex items-center justify-center space-x-2"><div className="h-px bg-slate-300 flex-1"></div><span className="text-xs text-slate-400 font-medium">OR</span><div className="h-px bg-slate-300 flex-1"></div></div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <input type="date" className="w-full text-xs p-2 border border-slate-300 rounded-md text-slate-500" />
+                                                <input type="date" className="w-full text-xs p-2 border border-slate-300 rounded-md text-slate-500" />
+                                            </div>
+                                            <button onClick={handleFindInvoices} className="w-full bg-white border border-slate-300 text-slate-700 font-bold text-sm py-2.5 rounded-lg hover:bg-slate-100 transition-colors shadow-sm mt-2">Find Invoices</button>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2">
+                                            <p className="font-bold text-[13px] text-slate-700 mb-2">Results for #{searchedInvoicePO}</p>
+                                            <div className="h-px bg-slate-200 mb-3"></div>
+                                            
+                                            <div className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm mb-3">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <button onClick={() => navigateTo('invoice-detail', { invoiceId: '178021' })} className="text-blue-600 font-bold text-[14px] hover:underline">Invoice #178021</button>
+                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 tracking-wide uppercase">OPEN</span>
+                                                </div>
+                                                <div className="mb-3">
+                                                    <p className="font-bold text-[16px] text-slate-900">$1,452.20</p>
+                                                    <p className="text-slate-500 text-[11px]">Sales Order #596672</p>
+                                                </div>
+                                                <button onClick={() => openPayModal('178021', 1452.20)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-2 rounded-md transition-colors shadow-sm">Pay Now</button>
+                                            </div>
+
+                                            <button onClick={resetInvoiceSearch} className="mt-2 text-slate-400 text-[12px] hover:text-slate-600 transition-colors w-full text-center block underline underline-offset-2">
+                                                Search Again
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="pt-4 px-2">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-sm font-semibold text-slate-500">Available Credit</span>
+                                        <span className="text-sm font-bold text-green-600">$15,000.00</span>
+                                    </div>
+                                    <div className="w-full bg-slate-200 rounded-full h-1.5 mb-1"><div className="bg-green-500 h-1.5 rounded-full w-1/4"></div></div>
+                                    <p className="text-xs text-slate-400 text-right">Net 30 Terms</p>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── MY PROFILE VIEW ──
+        function MyProfileView({ navigateTo, setIsStoreModalOpen, setIsAddPaymentModalOpen }) {
+            const [isChangingPassword, setIsChangingPassword] = useState(false);
+            const [passwords, setPasswords] = useState({ current: '', newPass: '', confirm: '' });
+            const [passError, setPassError] = useState('');
+            const [passSuccess, setPassSuccess] = useState('');
+
+            const handleSavePassword = () => {
+                if (passwords.newPass !== passwords.confirm) {
+                    setPassError("Passwords do not match");
+                    return;
+                }
+                setPassError("");
+                setPassSuccess("Password updated successfully");
+                setTimeout(() => {
+                    setPassSuccess("");
+                    setIsChangingPassword(false);
+                    setPasswords({ current: '', newPass: '', confirm: '' });
+                }, 3000);
+            };
+
+            return (
+                <div className="w-full flex-1 bg-slate-50 py-10">
+                    <div className="max-w-6xl mx-auto px-6 w-full">
+                        <h1 className="text-3xl font-extrabold text-slate-900 mb-8 tracking-tight">My Profile</h1>
+                        
+                        <div className="w-full space-y-6">
+                            
+                            {/* Card 1 - Account Information */}
+                            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden w-full">
+                                <div className="p-6">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <h2 className="text-[16px] font-bold text-slate-900 flex items-center">
+                                            <User className="w-5 h-5 mr-2 text-slate-500" /> Account Information
+                                        </h2>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">ID</p>
+                                                <p className="text-[14px] text-slate-800 font-medium">OE1268 Lucky Tire & Wheels</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Parent Company</p>
+                                                <p className="text-[14px] text-slate-800 font-medium">OEW Dealer Group</p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Company Name</p>
+                                                <p className="text-[14px] text-slate-800 font-medium">Lucky Tire & Wheels</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Sales Rep</p>
+                                                <p className="text-[14px] text-slate-800 font-medium">Akshay Akulwar</p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Email</p>
+                                                <p className="text-[14px] text-slate-800 font-medium">luckytire@ymail.com</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Phone Number</p>
+                                                <p className="text-[14px] text-slate-800 font-medium">(713) 555-0192</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Password Section */}
+                                    <div className="mt-6 pt-6 border-t border-slate-100">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <h3 className="font-bold text-[14px] text-slate-900 mb-1">Password</h3>
+                                                {!isChangingPassword && <p className="text-[18px] text-slate-800 leading-none tracking-widest">••••••••</p>}
+                                            </div>
+                                            {!isChangingPassword && (
+                                                <button onClick={() => setIsChangingPassword(true)} className="border border-slate-300 rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">Change Password</button>
+                                            )}
+                                        </div>
+
+                                        {isChangingPassword && (
+                                            <div className="space-y-4 max-w-md">
+                                                {passSuccess && <div className="p-3 bg-green-50 text-green-700 text-[13px] font-medium rounded-md">{passSuccess}</div>}
+                                                <div>
+                                                    <input type="password" placeholder="Current password" value={passwords.current} onChange={e => setPasswords({...passwords, current: e.target.value})} className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                </div>
+                                                <div>
+                                                    <input type="password" placeholder="New password" value={passwords.newPass} onChange={e => setPasswords({...passwords, newPass: e.target.value})} className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                    <p className="text-[11px] text-slate-400 mt-1.5">Minimum 8 characters</p>
+                                                </div>
+                                                <div>
+                                                    <input type="password" placeholder="Confirm new password" value={passwords.confirm} onChange={e => setPasswords({...passwords, confirm: e.target.value})} className="w-full p-2.5 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm" />
+                                                    {passError && <p className="text-red-500 text-[12px] mt-1.5 font-medium">{passError}</p>}
+                                                </div>
+                                                <div className="flex justify-end items-center space-x-3 pt-2">
+                                                    <button onClick={() => setIsChangingPassword(false)} className="text-sm font-medium text-slate-600 hover:text-slate-900">Cancel</button>
+                                                    <button onClick={handleSavePassword} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md shadow-sm transition-colors text-[13px]">Update Password</button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Card 2 - Current Store */}
+                            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden w-full">
+                                <div className="p-6">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-[16px] font-bold text-slate-900 flex items-center">
+                                            <MapPin className="w-5 h-5 mr-2 text-slate-500" /> Current Store
+                                        </h2>
+                                        <button onClick={() => setIsStoreModalOpen(true)} className="border border-slate-300 rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                                            Change Store
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="mb-5">
+                                        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Store Name</p>
+                                        <p className="font-bold text-[14px] text-[#1e3a6e]">Lucky Tire & Wheels</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-3">
+                                        <div>
+                                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Shipping Address</p>
+                                            <div className="space-y-0.5">
+                                                <p className="font-bold text-[13px] text-slate-900">Akshay B2B Test Company</p>
+                                                <p className="text-[13px] text-slate-600">1916 72ND DR E, Sarasota, FL 34243</p>
+                                                <p className="text-[13px] text-slate-600">United States</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Billing Address</p>
+                                            <div className="space-y-0.5">
+                                                <p className="font-bold text-[13px] text-slate-900">Akshay B2B Test Company</p>
+                                                <p className="text-[13px] text-slate-600">1916 72ND DR E, Sarasota, FL 34243</p>
+                                                <p className="text-[13px] text-slate-600">United States</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
+                                        <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <p className="text-[13px] text-slate-700 font-semibold mb-1">Need to make changes to your account?</p>
+                                            <p className="text-[12px] text-slate-500 mb-2">Shipping address and account detail updates must be made through your account representative.</p>
+                                            <button onClick={() => navigateTo('support')} className="text-[12px] text-blue-600 font-medium hover:underline">Contact Support &rarr;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Card 3 - Payment Methods */}
+                            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden w-full">
+                                <div className="p-6">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-[16px] font-bold text-slate-900 flex items-center">
+                                            <CreditCard className="w-5 h-5 mr-2 text-slate-500" /> Payment Methods
+                                        </h2>
+                                        <button onClick={() => setIsAddPaymentModalOpen(true)} className="border border-slate-300 rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                                            + Add Payment Method
+                                        </button>
+                                    </div>
+
+                                    {/* Saved Card Row */}
+                                    <div className="border border-slate-200 rounded-lg p-4 flex justify-between items-center bg-white shadow-sm">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="bg-slate-100 p-2 rounded">
+                                                <CreditCard className="w-6 h-6 text-slate-700" />
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-[13px] text-slate-800">Visa ending in 4242</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center space-x-6">
+                                            <p className="text-[12px] text-slate-500">Expires 04/2029</p>
+                                            <button className="border border-red-300 rounded-lg px-3 py-1 text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── PLACEHOLDER VIEWS ──
+        // These are intentionally empty stubs. Build each one out separately.
+        function OrdersView({ navigateTo }) { return null; }
+        function InvoicesView({ navigateTo }) { return null; }
+        function QuotesView({ navigateTo }) { return null; }
+
+        // ── PUBLIC HOME VIEW ──
+        function HomeView({ navigateTo }) {
+            return (
+                <div className="flex flex-col w-full h-full justify-center items-center bg-slate-900 relative">
+                    <div className="relative z-10 text-center px-4 pt-32 pb-32">
+                        <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-lg tracking-tight max-w-4xl">Premium OEM & Aftermarket Wheels</h1>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                            <button onClick={() => navigateTo("login")} className="px-8 py-4 bg-white text-blue-700 font-bold rounded-md shadow-lg hover:bg-slate-100 transition-all text-lg flex items-center justify-center"><LogIn className="w-5 h-5 mr-2" /> Dealer Login</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── LOGIN VIEW ──
+        function LoginView({ navigateTo }) {
+            const handleLogin = (e) => { e.preventDefault(); navigateTo("dashboard"); };
+            return (
+                <div className="flex-grow flex items-center justify-center py-12 px-4 bg-slate-100">
+                    <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg border border-slate-200">
+                        <h2 className="text-center text-3xl font-extrabold text-slate-900">Dealer Portal Login</h2>
+                        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+                            <div className="rounded-md shadow-sm space-y-4">
+                                <input name="email" type="email" required className="block w-full px-3 py-3 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email address" defaultValue="luckytire@ymail.com" />
+                                <input name="password" type="password" required className="block w-full px-3 py-3 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Password" defaultValue="password" />
+                            </div>
+                            <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-colors">Sign In to Portal</button>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── APPLY VIEW ──
+        function ApplyView({ navigateTo }) {
+            return (
+                <div className="flex-grow flex items-center justify-center bg-slate-50 p-8">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold mb-4">Application Form</h2>
+                        <button onClick={() => navigateTo("home")} className="px-4 py-2 bg-blue-600 text-white rounded">Back to Home</button>
+                    </div>
+                </div>
+            );
+        }
+
+        // ── FOOTER ──
+        function Footer() {
+            return (
+                <footer className="bg-[#0b1120] text-slate-300 py-16 flex-shrink-0">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                            <div>
+                                <div className="mb-6"><OewLogo className="h-10 w-auto" fill="#ffffff" /></div>
+                                <p className="text-slate-400 text-[15px] leading-relaxed pr-4">The premier B2B distributor for premium OEM replica and aftermarket wheels.</p>
+                            </div>
+                        </div>
+                        <div className="border-t border-slate-800 mt-16 pt-8 text-center">
+                            <p className="text-[15px] text-slate-500">© 2026 OE Wheels, LLC. All rights reserved. (Demo Prototype)</p>
+                        </div>
+                    </div>
+                </footer>
+            );
+        }
+
+        // ── APP ROUTER ──
+        function App() {
+            const [route, setRoute] = useState({ name: "dashboard", params: {} });
+            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+            // Lifted Modal States
+            const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
+            const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
+
+            const navigateTo = (viewName, params = {}) => {
+                setRoute({ name: viewName, params });
+                setIsMobileMenuOpen(false);
+                window.scrollTo(0, 0);
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
+                    <Header 
+                        currentView={route.name} 
+                        navigateTo={navigateTo} 
+                        isMobileMenuOpen={isMobileMenuOpen} 
+                        setIsMobileMenuOpen={setIsMobileMenuOpen} 
+                        isStoreModalOpen={isStoreModalOpen}
+                        setIsStoreModalOpen={setIsStoreModalOpen}
+                        isAddPaymentModalOpen={isAddPaymentModalOpen}
+                        setIsAddPaymentModalOpen={setIsAddPaymentModalOpen}
+                    />
+                    <main className="flex-1 flex flex-col">
+                        {route.name === "home"      && <HomeView navigateTo={navigateTo} />}
+                        {route.name === "login"     && <LoginView navigateTo={navigateTo} />}
+                        {route.name === "apply"     && <ApplyView navigateTo={navigateTo} />}
+                        {route.name === "dashboard" && <DashboardView navigateTo={navigateTo} />}
+                        {route.name === "my-profile" && <MyProfileView navigateTo={navigateTo} setIsStoreModalOpen={setIsStoreModalOpen} setIsAddPaymentModalOpen={setIsAddPaymentModalOpen} />}
+                        {route.name === "orders"    && <OrdersView navigateTo={navigateTo} />}
+                        {route.name === "invoices"  && <InvoicesView navigateTo={navigateTo} />}
+                        {route.name === "quotes"    && <QuotesView navigateTo={navigateTo} />}
+                        {/* TODO: Add new views here */}
+                    </main>
+                    <Footer />
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
